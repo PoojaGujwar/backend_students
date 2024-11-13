@@ -1,10 +1,29 @@
-
 const express = require("express");
 const cors = require("cors");
 const app = express();
 
 const { initializeDatabase } = require("./db/db.connection");
 const { Students } = require("./models/students.model");
+
+const newStudents ={
+  name: "Naman",
+  age: 15,
+  gender: "Male",
+  marks: 90,
+  attendance: 90,
+  grade: "A",
+}
+async function addToDatabase(newStudents){
+try{
+  const st = new Students(newStudents)
+  const saveSt = await st.save()
+  console.log(saveSt)
+
+}catch(error){
+  console.log("Not added",error)
+}
+}
+//addToDatabase(newStudents)
 
 app.use(cors());
 app.use(express.json());
@@ -17,7 +36,7 @@ app.get("/", (req, res) => {
 
 app.get("/students", async (req, res) => {
   try {
-    const students = await Student.find();
+    const students = await Students.find();
     res.json(students);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -28,7 +47,7 @@ app.post("/students", async (req, res) => {
   const { name, age, grade } = req.body;
 
   try {
-    const student = new Student({ name, age, grade });
+    const student = new Students({ name, age, grade });
     await student.save();
     res.status(201).json(student);
   } catch (error) {
@@ -41,7 +60,7 @@ app.put("/students/:id", async (req, res) => {
   const updatedStudentData = req.body;
 
   try {
-    const updatedStudent = await Student.findByIdAndUpdate(
+    const updatedStudent = await Students.findByIdAndUpdate(
       studentId,
       updatedStudentData,
       { new: true },
@@ -58,11 +77,11 @@ app.put("/students/:id", async (req, res) => {
   }
 });
 
-app.delete("/students/:id", async (req, res) => {
-  const studentId = req.params.id;
+app.delete("/students/:_id", async (req, res) => {
+  const studentId = req.params._id;
 
   try {
-    const deletedStudent = await Student.findByIdAndRemove(studentId);
+    const deletedStudent = await Students.findByIdAndDelete(studentId);
 
     if (!deletedStudent) {
       return res.status(404).json({ error: "Student not found" });
@@ -80,8 +99,7 @@ app.delete("/students/:id", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
