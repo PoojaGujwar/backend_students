@@ -47,7 +47,7 @@ app.post("/students", async (req, res) => {
   const { name, age, grade,gender } = req.body;
 
   try {
-    const student = new Students({ name, age, grade,gender });
+    const student = new Students(req.body);
     await student.save();
     res.status(201).json(student);
   } catch (error) {
@@ -55,8 +55,8 @@ app.post("/students", async (req, res) => {
   }
 });
 
-app.put("/students/:id", async (req, res) => {
-  const studentId = req.params.id;
+app.put("/students/:_id", async (req, res) => {
+  const studentId = req.params._id;
   const updatedStudentData = req.body;
 
   try {
